@@ -1,1 +1,60 @@
+import asyncio
+import requests
+from aiogram import Bot, Dispatcher, types
+from aiogram.filters import Command
+
+BOT_TOKEN = "7619297853:AAHiUMgtIkdkIYczOXh0dLNdLgprJtM21r0"
+API_key = "db82390453211da75e6a36e0d43674d6"
+
+bot = Bot(token=BOT_TOKEN)
+dp = Dispatcher()
+
+@dp.message(Command("start"))
+async def cmd_start(message: types.Message):
+    await message.answer("Привет! Я помогу тебе определить погоду в твоем городе!\n"
+                         "Напиши название города, и я покажу тебе текущую погоду!"
+                         )
+
+@dp.message()
+async def get_weather(message: types.Message):
+    city = message.text.strip()
+
+    try:
+        url = f"http://api.openweathermap.org/data/2.5/weather?q={city}&appid={API_key}&units=metric&lang=ru"
+
+        response = requests.get(url)
+        data = response.json()
+
+        if response.status_code == 200:
+            temp = data['main']['temp']
+            humidity = data['main']['humidity']
+            wind_speed = data['wind']['speed']
+            description = data['weather'][0]['description']
+            city_name = data['name']
+
+
+
+            answer = (
+                f"🌍 Погода в городе {city_name}:\n"
+                f"🌡️ Температура: {temp}°C\n"
+                f"💧 Влажность: {humidity}%\n"
+                f"💨 Скорость ветра: {wind_speed} м/с\n"
+                f"☁️ Описание: {description.capitalize()}"
+            )
+
+            await message.answer(answer)
+
+        else:
+            await message.answer("❌ Город не найден. Проверьте написание и попробуйте снова!")
+
+    except Exception as e:
+        await message.answer("⚠️ Произошла ошибка при получении погоды. Попробуйте позже.")
+
+
+async def main():
+    print("The Weather Bot is starting")
+    await dp.start_polling(bot)
+
+if __name__ == "__main__":
+    asyncio.run(main())
 
