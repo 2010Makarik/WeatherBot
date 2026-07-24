@@ -4,8 +4,8 @@ import asyncpg
 from aiogram import Bot, Dispatcher, types
 from aiogram.filters import Command
 
-BOT_TOKEN = "7619297853:AAHiUMgtIkdkIYczOXh0dLNdLgprJtM21r0"
-API_key = "db82390453211da75e6a36e0d43674d6"
+BOT_TOKEN = ""
+API_key = ""
 
 DB_CONFIG = {
     "host": "localhost",
